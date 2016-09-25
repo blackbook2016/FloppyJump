@@ -19,13 +19,18 @@ public class Floppy : MonoBehaviour
 	private Rigidbody2D rb;
 	private MeshRenderer rend;
 	private Collider2D groundedObj;
+	private TrailRenderer trail;
+
+	public GameObject canvas;
+	public GameObject explosion;
 
 	int layerMask = 1 << 8;
 
 	private Vector3 origin;
 	private Vector3 size;
 
-
+	private Vector3 initPos;
+	private float timeDelay = 0;
 	#endregion
 
 	#region Unity
@@ -45,10 +50,13 @@ public class Floppy : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody2D> ();
 		rend = GetComponent<MeshRenderer> ();
+		trail = GetComponent<TrailRenderer> ();
 
 		size = rend.bounds.size;
 		size.x -= 0.1f;
 		size.y = 0.50f;
+
+		initPos = transform.position;
 	}
 
 	void FixedUpdate () 
@@ -74,6 +82,11 @@ public class Floppy : MonoBehaviour
 	{
 		if(!isGrounded)
 			CheckIsGrounded (coll.collider);
+
+		if (coll.collider.tag == "KillZone")
+			Replay ();
+		if (coll.collider.tag == "EndZone")
+			GameOver ();
 	}
 
 	void OnCollisionStay2D(Collision2D coll) 
@@ -99,6 +112,8 @@ public class Floppy : MonoBehaviour
 		vel.y = 0;
 		rb.velocity = vel;
 		rb.AddForce (Vector2.up * jumpForce);
+
+		Instantiate (explosion, rend.bounds.min, Quaternion.identity);
 	}
 
 	private void Fall()
@@ -111,7 +126,7 @@ public class Floppy : MonoBehaviour
 
 	private void Swing()
 	{
-		rb.AddForce(Vector3.right * Mathf.Cos (Time.time) * swingSpeed);
+		rb.AddForce(Vector3.right * Mathf.Cos (Time.time - timeDelay) * swingSpeed);
 	}
 
 	private void CheckIsGrounded(Collider2D coll)
@@ -127,5 +142,40 @@ public class Floppy : MonoBehaviour
 			isGrounded = true;
 //			print (rend.bounds.Intersects (detectedGroundObj.bounds) + "  " + detectedGroundObj);
 		}
+	}
+
+	public void Replay()
+	{
+		foreach (GameObject go in GameObject.FindGameObjectsWithTag ("Explosion")) 
+			Destroy (go);
+		
+		Time.timeScale = 1;
+
+		if(canvas)
+			canvas.SetActive(false);
+
+		rb.velocity = Vector2.zero;
+		rb.angularVelocity = 0;
+
+		transform.position = initPos;
+		transform.rotation = Quaternion.identity;
+
+		timeDelay = Time.time;
+
+		isGrounded = false;
+		djDone = false;
+
+		trail.Clear ();
+
+		CameraFloppy cam = Camera.main.GetComponent<CameraFloppy> ();
+		if (cam)
+			cam.Reset ();
+	}
+
+	private void GameOver()
+	{
+		Time.timeScale = 0;
+		if(canvas)
+			canvas.SetActive(true);
 	}
 }

@@ -9,10 +9,14 @@ public class CameraFloppy : MonoBehaviour
 	public Vector3 offset;
 	private float swingSpeed;
 
+	private Vector3 initPos;
+
 	void Start () 
 	{
 		player = GameObject.FindWithTag("Player");
+
 		offset = transform.position - player.transform.position;
+		initPos = transform.position;
 	}
 
 	void FixedUpdate()
@@ -22,5 +26,10 @@ public class CameraFloppy : MonoBehaviour
 		transform.position = followPos;
 
 		transform.position = Vector3.Lerp(transform.position, player.transform.position + offset, Time.deltaTime * followSpeed);
+	}
+
+	public void Reset()
+	{
+		transform.position = initPos;
 	}
 }
