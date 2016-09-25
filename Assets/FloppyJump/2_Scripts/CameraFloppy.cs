@@ -21,11 +21,11 @@ public class CameraFloppy : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		Vector3 followPos = transform.position;
-		followPos.x = player.transform.position.x;
-		transform.position = followPos;
-
-		transform.position = Vector3.Lerp(transform.position, player.transform.position + offset, Time.deltaTime * followSpeed);
+//		Vector3 followPos = transform.position;
+//		followPos.x = player.transform.position.x;
+//		transform.position = followPos;
+//
+//		transform.position = Vector3.Lerp(transform.position, player.transform.position + offset, Time.deltaTime * followSpeed);
 	}
 
 	public void Reset()
