@@ -315,8 +315,8 @@ public class DynamicLightEditor : Editor {
 		Sprite bgClicked = (Sprite)AssetDatabase.LoadAssetAtPath("Assets/2DDL/Textures/box_sprite.png", typeof(Sprite));
 		btnStyle.margin = new RectOffset(0, 0, 0, 0);
 		btnStyle.padding = new RectOffset(0, 0, 4, 4);
-		btnStyle.normal.background = bg.texture;
-		btnStyle.active.background = bgClicked.texture;
+//		btnStyle.normal.background = bg.texture;
+//		btnStyle.active.background = bgClicked.texture;
 
 	}
 
