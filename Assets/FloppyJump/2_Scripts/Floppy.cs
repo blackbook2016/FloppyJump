@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,6 +32,12 @@ public class Floppy : MonoBehaviour
 
 	private Vector3 initPos;
 	private float timeDelay = 0;
+
+	public Image fade;
+	public float fadeTimer = 5;
+	private Color c;
+	private float timerStart;
+	private bool changeScene = false;
 	#endregion
 
 	#region Unity
@@ -57,6 +64,18 @@ public class Floppy : MonoBehaviour
 		size.y = 0.50f;
 
 		initPos = transform.position;
+	}
+
+	void Update ()
+	{
+		if (changeScene) 
+		{
+			c.a =  ((Time.time - timerStart) / fadeTimer);
+			fade.color = c;
+
+			if (c.a >= 1)
+				SceneManager.LoadScene ("Menu_0");		
+		}
 	}
 
 	void FixedUpdate () 
@@ -174,8 +193,18 @@ public class Floppy : MonoBehaviour
 
 	private void GameOver()
 	{
-		Time.timeScale = 0;
-		if(canvas)
-			canvas.SetActive(true);
+//		Time.timeScale = 0;
+
+		if (canvas && !changeScene) 
+		{
+			c = fade.color;
+			c.a = 0;
+			fade.color = c;
+
+			changeScene = true;
+			timerStart = Time.time;
+
+			canvas.SetActive (true);
+		}
 	}
 }
