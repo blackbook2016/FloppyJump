@@ -24,6 +24,7 @@ public class Floppy : MonoBehaviour
 
 	public GameObject canvas;
 	public GameObject explosion;
+	public GameObject endexplosion;
 
 	int layerMask = 1 << 8;
 
@@ -76,10 +77,6 @@ public class Floppy : MonoBehaviour
 			if (c.a >= 1)
 				SceneManager.LoadScene ("Menu_0");		
 		}
-	}
-
-	void FixedUpdate () 
-	{    
 		if (Input.GetKeyDown ("up")) 
 		{
 			if (InfiniteJump || isGrounded)
@@ -90,6 +87,11 @@ public class Floppy : MonoBehaviour
 				Jump ();
 			}
 		}
+	}
+
+	void FixedUpdate () 
+	{    
+		
 
 		if (Input.GetKeyDown ("down") && !isGrounded) 
 			Fall ();			
@@ -205,6 +207,7 @@ public class Floppy : MonoBehaviour
 			timerStart = Time.time;
 
 			canvas.SetActive (true);
+			endexplosion.SetActive (true);
 		}
 	}
 }
