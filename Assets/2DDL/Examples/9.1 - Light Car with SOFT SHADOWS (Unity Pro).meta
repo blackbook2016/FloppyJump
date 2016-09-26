@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 53ca940a34140b84fb64a8620df7e6d2
+guid: 10eeb45243a9b4e6ab52646d76381253
 labels:
 - light
 - 2dLight
@@ -24,6 +24,22 @@ labels:
 - umbra
 - penumbra
 - volumetric
+- draganddrop
+- drag
+- and
+- drop
+- vision
+- field
+- fieldofview
+- view
+- lineofsight
+- sight
+- occlusion
+- effect
+- 2dshadows
+- hit
+- bomb
+- wysiwyg
 folderAsset: yes
 DefaultImporter:
   userData: 
