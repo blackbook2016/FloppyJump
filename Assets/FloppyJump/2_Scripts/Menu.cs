@@ -13,6 +13,11 @@ public class Menu : MonoBehaviour
 	private Color c;
 	private float timerStart;
 
+	void Awake()
+	{
+		Cursor.visible = false;
+	}
+
 	void Start()
 	{
 		c = fade.color;
