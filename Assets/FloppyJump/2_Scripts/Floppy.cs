@@ -25,6 +25,7 @@ public class Floppy : MonoBehaviour
 	public GameObject canvas;
 	public GameObject explosion;
 	public GameObject endexplosion;
+	public GameObject killexplosion;
 
 	int layerMask = 1 << 8;
 
@@ -39,13 +40,17 @@ public class Floppy : MonoBehaviour
 	private Color c;
 	private float timerStart;
 	private bool changeScene = false;
+	private bool replayStarted = false;
+
+	private AudioSource audioSource;
+	public AudioClip jumpSound;
+	public AudioClip deathSound;
 	#endregion
 
 	#region Unity
 	void OnDrawGizmosSelected() 
 	{
 		rend = GetComponent<MeshRenderer> ();
-
 		origin = transform.position;
 		origin.y -= rend.bounds.size.y / 2;
 
@@ -59,6 +64,7 @@ public class Floppy : MonoBehaviour
 		rb = GetComponent<Rigidbody2D> ();
 		rend = GetComponent<MeshRenderer> ();
 		trail = GetComponent<TrailRenderer> ();
+		audioSource = GetComponent<AudioSource> ();
 
 		size = rend.bounds.size;
 		size.x -= 0.1f;
@@ -74,8 +80,15 @@ public class Floppy : MonoBehaviour
 			c.a =  ((Time.time - timerStart) / fadeTimer);
 			fade.color = c;
 
-			if (c.a >= 1)
-				SceneManager.LoadScene ("Menu_0");		
+			if (c.a >= 1) 
+			{
+				if(SceneManager.GetActiveScene().name == "Scene_1") 
+					SceneManager.LoadScene ("Scene_2");
+				else if(SceneManager.GetActiveScene().name == "Scene_2") 
+					SceneManager.LoadScene ("Scene_3");
+				else
+					SceneManager.LoadScene ("Menu_0");
+			}
 		}
 		if (Input.GetKeyDown ("up")) 
 		{
@@ -91,12 +104,11 @@ public class Floppy : MonoBehaviour
 
 	void FixedUpdate () 
 	{    
-		
-
 		if (Input.GetKeyDown ("down") && !isGrounded) 
-			Fall ();			
-
-		Swing ();
+			Fall ();		
+		
+		if(!replayStarted)
+			Swing ();
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) 
@@ -104,8 +116,8 @@ public class Floppy : MonoBehaviour
 		if(!isGrounded)
 			CheckIsGrounded (coll.collider);
 
-		if (coll.collider.tag == "KillZone")
-			Replay ();
+		if (coll.collider.tag == "KillZone" && !replayStarted)
+			StartCoroutine("Replay");
 		if (coll.collider.tag == "EndZone")
 			GameOver ();
 	}
@@ -135,6 +147,7 @@ public class Floppy : MonoBehaviour
 		rb.AddForce (Vector2.up * jumpForce);
 
 		Instantiate (explosion, rend.bounds.min, Quaternion.identity);
+		audioSource.PlayOneShot(jumpSound);
 	}
 
 	private void Fall()
@@ -165,18 +178,26 @@ public class Floppy : MonoBehaviour
 		}
 	}
 
-	public void Replay()
+	public IEnumerator Replay()
 	{
-		foreach (GameObject go in GameObject.FindGameObjectsWithTag ("Explosion")) 
-			Destroy (go);
-		
-		Time.timeScale = 1;
+		CameraFloppy cam = Camera.main.GetComponent<CameraFloppy> ();
 
-		if(canvas)
-			canvas.SetActive(false);
+		replayStarted = true;
+		audioSource.PlayOneShot(deathSound);
+		Instantiate (killexplosion, rend.bounds.min, Quaternion.identity);
+		rend.enabled = false;
 
 		rb.velocity = Vector2.zero;
 		rb.angularVelocity = 0;
+		rb.isKinematic = true;
+
+		yield return new WaitForSeconds(1);
+
+		foreach (GameObject go in GameObject.FindGameObjectsWithTag ("Explosion")) 
+			Destroy (go);
+
+		if(canvas)
+			canvas.SetActive(false);
 
 		transform.position = initPos;
 		transform.rotation = Quaternion.identity;
@@ -188,9 +209,14 @@ public class Floppy : MonoBehaviour
 
 		trail.Clear ();
 
-		CameraFloppy cam = Camera.main.GetComponent<CameraFloppy> ();
+		rb.isKinematic = false;
+
 		if (cam)
 			cam.Reset ();
+		
+		rend.enabled = true;
+
+		replayStarted = false;
 	}
 
 	private void GameOver()
