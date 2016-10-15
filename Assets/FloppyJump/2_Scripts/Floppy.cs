@@ -23,6 +23,7 @@ public class Floppy : MonoBehaviour
 	private TrailRenderer trail;
 
 	public GameObject canvas;
+	public GameObject imageWin;
 	public GameObject explosion;
 	public GameObject endexplosion;
 	public GameObject killexplosion;
@@ -88,7 +89,9 @@ public class Floppy : MonoBehaviour
 
 			if (c.a >= 1) 
 			{
-				if (SceneManager.GetActiveScene ().name == "Scene_1")
+				if (timerMenu >= 10) 
+					SceneManager.LoadScene ("Menu_0");
+				else if (SceneManager.GetActiveScene ().name == "Scene_1")
 					SceneManager.LoadScene ("Scene_2");
 				else if (SceneManager.GetActiveScene ().name == "Scene_2")
 					SceneManager.LoadScene ("Scene_3");
@@ -119,12 +122,12 @@ public class Floppy : MonoBehaviour
 			{
 				timerMenu += Time.deltaTime;
 
-				if(timerMenu >= 10)
-					SceneManager.LoadScene ("Menu_0");
+				if (timerMenu >= 10) 
+					GameOver ();
 			}
 			
-//			if (Input.GetKeyDown ("right"))
-//				GameOver ();
+			if (Input.GetKeyDown ("right"))
+				GameOver ();
 		}
 	}
 
@@ -235,8 +238,6 @@ public class Floppy : MonoBehaviour
 
 	private void GameOver()
 	{
-//		Time.timeScale = 0;
-
 		if (canvas && !changeScene) 
 		{
 			c = fade.color;
@@ -246,8 +247,12 @@ public class Floppy : MonoBehaviour
 			changeScene = true;
 			timerStart = Time.time;
 
+			if (timerMenu >= 10) 
+				imageWin.SetActive (false);
+			else
+				endexplosion.SetActive (true);
+
 			canvas.SetActive (true);
-			endexplosion.SetActive (true);
 		}
 	}
 }
