@@ -58,7 +58,7 @@ public class Floppy : MonoBehaviour
 		origin.y = rend.bounds.min.y - 0.25f;
 
 		size = rend.bounds.size;
-		size.x -= 0.1f;
+		size.x += 0.1f;
 		size.y = 0.50f;
 
 		Gizmos.color = new Color(1, 0, 0, 0.5F);
@@ -184,7 +184,7 @@ public class Floppy : MonoBehaviour
 		origin.y = rend.bounds.min.y - 0.25f;
 
 		size = rend.bounds.size;
-		size.x -= 0.1f;
+		size.x += 0.1f;
 		size.y = 0.50f;
 
 		Collider2D detectedGroundObj = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
