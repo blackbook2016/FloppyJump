@@ -252,7 +252,7 @@ public class Floppy : MonoBehaviour
 			if (timerMenu >= 10) 
 				imageWin.SetActive (false);
 			else
-				endexplosion.SetActive (true);
+				Instantiate (endexplosion, rend.bounds.min, Quaternion.identity);
 
 			canvas.SetActive (true);
 		}
