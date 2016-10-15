@@ -101,7 +101,7 @@ public class Floppy : MonoBehaviour
 					SceneManager.LoadScene ("Scene_0");
 			}
 		} 
-		else 
+		else if(!replayStarted)
 		{
 			if (Input.GetKeyDown ("up")) 
 			{
