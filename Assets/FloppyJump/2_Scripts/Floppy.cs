@@ -12,7 +12,7 @@ public class Floppy : MonoBehaviour
 	public float falldownSpeed = 1.5f;
 	public float swingSpeed = 1.5f;
 
-	private bool isGrounded = false;
+	public bool isGrounded = false;
 	public bool InfiniteJump = false;
 	public bool doubleJump = false;
 	private bool djDone = false;
@@ -27,7 +27,7 @@ public class Floppy : MonoBehaviour
 	public GameObject endexplosion;
 	public GameObject killexplosion;
 
-	int layerMask = 1 << 8;
+	private int layerMask = 1 << 8;
 
 	private Vector3 origin;
 	private Vector3 size;
@@ -41,6 +41,8 @@ public class Floppy : MonoBehaviour
 	private float timerStart;
 	private bool changeScene = false;
 	private bool replayStarted = false;
+	private float timerMenu = 0;
+
 
 	private AudioSource audioSource;
 	public AudioClip jumpSound;
@@ -52,7 +54,11 @@ public class Floppy : MonoBehaviour
 	{
 		rend = GetComponent<MeshRenderer> ();
 		origin = transform.position;
-		origin.y -= rend.bounds.size.y / 2;
+		origin.y = rend.bounds.min.y - 0.25f;
+
+		size = rend.bounds.size;
+		size.x -= 0.1f;
+		size.y = 0.50f;
 
 		Gizmos.color = new Color(1, 0, 0, 0.5F);
 
@@ -77,63 +83,67 @@ public class Floppy : MonoBehaviour
 	{
 		if (changeScene) 
 		{
-			c.a =  ((Time.time - timerStart) / fadeTimer);
+			c.a = ((Time.time - timerStart) / fadeTimer);
 			fade.color = c;
 
 			if (c.a >= 1) 
 			{
-				if(SceneManager.GetActiveScene().name == "Scene_1") 
+				if (SceneManager.GetActiveScene ().name == "Scene_1")
 					SceneManager.LoadScene ("Scene_2");
-				else if(SceneManager.GetActiveScene().name == "Scene_2") 
+				else if (SceneManager.GetActiveScene ().name == "Scene_2")
 					SceneManager.LoadScene ("Scene_3");
 				else
 					SceneManager.LoadScene ("Menu_0");
 			}
-		}
-		if (Input.GetKeyDown ("up")) 
+		} 
+		else 
 		{
-			if (InfiniteJump || isGrounded)
-				Jump ();
-			else if (doubleJump && !djDone) 
+			if (Input.GetKeyDown ("up")) 
 			{
-				djDone = true;
-				Jump ();
+				if (InfiniteJump || isGrounded)
+					Jump ();
+				else if (doubleJump && !djDone) 
+				{
+					djDone = true;
+					Jump ();
+				}
 			}
+
+			if (Input.GetKeyDown ("down") && !isGrounded) 
+			{
+				Fall ();
+				timerMenu = 0;
+			}
+
+			if(Input.GetKey ("down"))
+			{
+				timerMenu += Time.deltaTime;
+
+				if(timerMenu >= 10)
+					SceneManager.LoadScene ("Menu_0");
+			}
+			
+//			if (Input.GetKeyDown ("right"))
+//				GameOver ();
 		}
 	}
 
 	void FixedUpdate () 
-	{    
-		if (Input.GetKeyDown ("down") && !isGrounded) 
-			Fall ();		
-		
-		if(!replayStarted)
+	{   
+		if(!replayStarted && !changeScene)
 			Swing ();
+
+		CheckIsGrounded ();
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) 
 	{
-		if(!isGrounded)
-			CheckIsGrounded (coll.collider);
-
-		if (coll.collider.tag == "KillZone" && !replayStarted)
-			StartCoroutine("Replay");
-		if (coll.collider.tag == "EndZone")
-			GameOver ();
-	}
-
-	void OnCollisionStay2D(Collision2D coll) 
-	{
-		if(!isGrounded)
-			CheckIsGrounded (coll.collider);
-	}
-
-	void OnCollisionExit2D(Collision2D coll) 
-	{
-		if (coll.collider == groundedObj) 
+		if (!changeScene) 
 		{
-			isGrounded = false;
-			djDone = false;
+			if (coll.collider.tag == "KillZone" && !replayStarted)
+				StartCoroutine ("Replay");
+			if (coll.collider.tag == "EndZone")
+				GameOver ();
 		}
 	}
 	#endregion
@@ -163,19 +173,23 @@ public class Floppy : MonoBehaviour
 		rb.AddForce(Vector3.right * Mathf.Cos (Time.time - timeDelay) * swingSpeed);
 	}
 
-	private void CheckIsGrounded(Collider2D coll)
+	private void CheckIsGrounded()
 	{
 		origin = transform.position;
-		origin.y -= rend.bounds.size.y / 4;
+		origin.y = rend.bounds.min.y - 0.25f;
+
+		size = rend.bounds.size;
+		size.x -= 0.1f;
+		size.y = 0.50f;
 
 		Collider2D detectedGroundObj = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
 
-		if (detectedGroundObj && coll == detectedGroundObj) 
-		{
-			groundedObj = coll;
-			isGrounded = true;
-//			print (rend.bounds.Intersects (detectedGroundObj.bounds) + "  " + detectedGroundObj);
-		}
+		if (!isGrounded  && isGrounded != detectedGroundObj)
+			djDone = false;
+		
+		groundedObj = detectedGroundObj;
+		isGrounded = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
+//		print (detectedGroundObj);
 	}
 
 	public IEnumerator Replay()
