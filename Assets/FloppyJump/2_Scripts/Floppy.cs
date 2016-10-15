@@ -90,13 +90,15 @@ public class Floppy : MonoBehaviour
 			if (c.a >= 1) 
 			{
 				if (timerMenu >= 10) 
-					SceneManager.LoadScene ("Menu_0");
+					SceneManager.LoadScene ("Scene_0");
+				else if (SceneManager.GetActiveScene ().name == "Scene_0")
+					SceneManager.LoadScene ("Scene_1");
 				else if (SceneManager.GetActiveScene ().name == "Scene_1")
 					SceneManager.LoadScene ("Scene_2");
 				else if (SceneManager.GetActiveScene ().name == "Scene_2")
 					SceneManager.LoadScene ("Scene_3");
 				else
-					SceneManager.LoadScene ("Menu_0");
+					SceneManager.LoadScene ("Scene_0");
 			}
 		} 
 		else 
