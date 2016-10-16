@@ -22,6 +22,8 @@ public class Floppy : MonoBehaviour
 	private Collider2D groundedObj;
 	private TrailRenderer trail;
 
+	public string up = "up";
+	public string down = "down";
 	public GameObject canvas;
 	public GameObject imageWin;
 	public GameObject explosion;
@@ -58,7 +60,7 @@ public class Floppy : MonoBehaviour
 		origin.y = rend.bounds.min.y - 0.25f;
 
 		size = rend.bounds.size;
-		size.x += 0.1f;
+		size.x += 0.5f;
 		size.y = 0.50f;
 
 		Gizmos.color = new Color(1, 0, 0, 0.5F);
@@ -103,7 +105,7 @@ public class Floppy : MonoBehaviour
 		} 
 		else if(!replayStarted)
 		{
-			if (Input.GetKeyDown ("up")) 
+			if (Input.GetKeyDown (up)) 
 			{
 				if (InfiniteJump || isGrounded)
 					Jump ();
@@ -114,13 +116,13 @@ public class Floppy : MonoBehaviour
 				}
 			}
 
-			if (Input.GetKeyDown ("down") && !isGrounded) 
+			if (Input.GetKeyDown (down) && !isGrounded) 
 			{
 				Fall ();
 				timerMenu = 0;
 			}
 
-			if(Input.GetKey ("down"))
+			if(Input.GetKey (down))
 			{
 				timerMenu += Time.deltaTime;
 
@@ -128,8 +130,8 @@ public class Floppy : MonoBehaviour
 					GameOver ();
 			}
 			
-			if (Input.GetKeyDown ("right"))
-				GameOver ();
+			//if (Input.GetKeyDown ("right"))
+			//	GameOver ();
 		}
 	}
 
