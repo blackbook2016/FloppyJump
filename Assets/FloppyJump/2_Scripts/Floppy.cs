@@ -130,8 +130,8 @@ public class Floppy : MonoBehaviour
 					GameOver ();
 			}
 			
-			//if (Input.GetKeyDown ("right"))
-			//	GameOver ();
+			if (Input.GetKeyDown ("space"))
+				GameOver ();
 		}
 	}
 
@@ -183,11 +183,11 @@ public class Floppy : MonoBehaviour
 	private void CheckIsGrounded()
 	{
 		origin = transform.position;
-		origin.y = rend.bounds.min.y - 0.25f;
+		origin.y = rend.bounds.min.y - 0.1f;
 
 		size = rend.bounds.size;
-		size.x += 0.15f;
-		size.y = 0.50f;
+		size.x += 0.4f;
+		size.y += 0.1f;
 
 		Collider2D detectedGroundObj = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
 
