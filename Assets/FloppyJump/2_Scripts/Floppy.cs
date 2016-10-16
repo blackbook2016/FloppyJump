@@ -57,11 +57,11 @@ public class Floppy : MonoBehaviour
 	{
 		rend = GetComponent<MeshRenderer> ();
 		origin = transform.position;
-		origin.y = rend.bounds.min.y - 0.25f;
+		origin.y = rend.bounds.min.y - 0.1f;
 
 		size = rend.bounds.size;
-		size.x += 0.5f;
-		size.y = 0.50f;
+		size.x += 0.4f;
+		size.y += 0.1f;
 
 		Gizmos.color = new Color(1, 0, 0, 0.5F);
 
@@ -186,7 +186,7 @@ public class Floppy : MonoBehaviour
 		origin.y = rend.bounds.min.y - 0.25f;
 
 		size = rend.bounds.size;
-		size.x += 0.1f;
+		size.x += 0.15f;
 		size.y = 0.50f;
 
 		Collider2D detectedGroundObj = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
@@ -228,7 +228,7 @@ public class Floppy : MonoBehaviour
 		isGrounded = false;
 		djDone = false;
 
-		trail.Clear ();
+//		trail.Clear ();
 
 		rb.isKinematic = false;
 
