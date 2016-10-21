@@ -27,8 +27,12 @@ namespace AudioAnalyzer
 
 		private float freqsum = 0;
 
+		private bool clapEnded = true;
+		private Floppy fl;
+
 		// Use this for initialization
 		void Start () {
+			fl = transform.GetComponent<Floppy> ();
 			if (audioInputObject == null)
 	            audioInputObject = GameObject.Find("AudioAnalyzer");
 			if (audioInputObject == null)
@@ -64,36 +68,36 @@ namespace AudioAnalyzer
 				freqsum /= i;
 				l = freqsum*10000;
 			}
-			if ( l >= threshold )
-			{
-
-				if (affectTransform)
+			if (l >= threshold) {
+				if (fl && clapEnded) 
 				{
-					this.transform.position += (l * transformModifier *Time.deltaTime); 					
+					clapEnded = false;
+					fl.ExternalJumpDetected ();
 				}
-				if (affectRotation)
-				{
+
+				if (affectTransform) {
+					this.transform.position += (l * transformModifier * Time.deltaTime); 					
+				}
+				if (affectRotation) {
 					Quaternion rr = this.gameObject.transform.rotation;
 					rr.eulerAngles += rotationAngleModifier * l * Time.deltaTime;
 					this.transform.rotation = rr;
 				}
-				if (affectScale)
-				{
+				if (affectScale) {
 					this.gameObject.transform.localScale = Vector3.one + (scaleModifier * Time.deltaTime * l);
-					if (scaleLimitMax != 0)
-					{
+					if (scaleLimitMax != 0) {
 						d = this.gameObject.transform.localScale;
 						if (this.gameObject.transform.localScale.x > scaleLimitMax)
-							d[0] = scaleLimitMax;
+							d [0] = scaleLimitMax;
 						if (this.gameObject.transform.localScale.y > scaleLimitMax)
-							d[1] = scaleLimitMax;
+							d [1] = scaleLimitMax;
 						if (this.gameObject.transform.localScale.z > scaleLimitMax)
-							d[2] = scaleLimitMax;
+							d [2] = scaleLimitMax;
 						this.gameObject.transform.localScale = d;
 					}
 				}
-			}
-
+			} else
+				clapEnded = true;
 			
 		}
 	}

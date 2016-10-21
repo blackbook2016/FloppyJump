@@ -19,8 +19,8 @@ public class Floppy : MonoBehaviour
 
 	private Rigidbody2D rb;
 	private MeshRenderer rend;
-	private Collider2D groundedObj;
-	private TrailRenderer trail;
+	//	private Collider2D groundedObj;
+	//	private TrailRenderer trail;
 
 	public string up = "up";
 	public string down = "down";
@@ -72,7 +72,7 @@ public class Floppy : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody2D> ();
 		rend = GetComponent<MeshRenderer> ();
-		trail = GetComponent<TrailRenderer> ();
+		//		trail = GetComponent<TrailRenderer> ();
 		audioSource = GetComponent<AudioSource> ();
 
 		size = rend.bounds.size;
@@ -129,7 +129,7 @@ public class Floppy : MonoBehaviour
 				if (timerMenu >= 10) 
 					GameOver ();
 			}
-			
+
 			if (Input.GetKeyDown ("space"))
 				GameOver ();
 		}
@@ -154,7 +154,19 @@ public class Floppy : MonoBehaviour
 		}
 	}
 	#endregion
-
+	public void ExternalJumpDetected()
+	{
+		if (!changeScene && !replayStarted) 
+		{
+			if (InfiniteJump || isGrounded)
+				Jump ();
+			else if (doubleJump && !djDone) 
+			{
+				djDone = true;
+				Jump ();
+			}
+		}
+	}
 
 	private void Jump()
 	{
@@ -193,10 +205,10 @@ public class Floppy : MonoBehaviour
 
 		if (!isGrounded  && isGrounded != detectedGroundObj)
 			djDone = false;
-		
-		groundedObj = detectedGroundObj;
+
+		//		groundedObj = detectedGroundObj;
 		isGrounded = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
-//		print (detectedGroundObj);
+		//		print (detectedGroundObj);
 	}
 
 	public IEnumerator Replay()
@@ -212,10 +224,12 @@ public class Floppy : MonoBehaviour
 		rb.angularVelocity = 0;
 		rb.isKinematic = true;
 
+		Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
+
 		yield return new WaitForSeconds(1);
 
-		foreach (GameObject go in GameObject.FindGameObjectsWithTag ("Explosion")) 
-			Destroy (go);
+		//		foreach (GameObject go in GameObject.FindGameObjectsWithTag ("Explosion")) 
+		//			Destroy (go);
 
 		if(canvas)
 			canvas.SetActive(false);
@@ -228,13 +242,13 @@ public class Floppy : MonoBehaviour
 		isGrounded = false;
 		djDone = false;
 
-//		trail.Clear ();
+		//		trail.Clear ();
 
 		rb.isKinematic = false;
 
 		if (cam)
 			cam.Reset ();
-		
+
 		rend.enabled = true;
 
 		replayStarted = false;
@@ -251,10 +265,14 @@ public class Floppy : MonoBehaviour
 			changeScene = true;
 			timerStart = Time.time;
 
-			if (timerMenu >= 10) 
+			if (timerMenu >= 10)
 				imageWin.SetActive (false);
-			else
-				Instantiate (endexplosion, rend.bounds.min, Quaternion.identity);
+			else 
+			{
+				Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
+				if(endexplosion)
+					Instantiate (endexplosion, rend.bounds.min, Quaternion.identity);
+			}
 
 			canvas.SetActive (true);
 		}
