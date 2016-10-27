@@ -269,7 +269,7 @@ public class Floppy : MonoBehaviour
 				imageWin.SetActive (false);
 			else 
 			{
-				Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
+	//			Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
 				if(endexplosion)
 					Instantiate (endexplosion, rend.bounds.min, Quaternion.identity);
 			}
