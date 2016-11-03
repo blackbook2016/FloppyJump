@@ -50,6 +50,7 @@ public class Floppy : MonoBehaviour
 	private AudioSource audioSource;
 	public AudioClip jumpSound;
 	public AudioClip deathSound;
+	public AudioClip winSound;
 	#endregion
 
 	#region Unity
@@ -264,6 +265,8 @@ public class Floppy : MonoBehaviour
 
 			changeScene = true;
 			timerStart = Time.time;
+
+			audioSource.PlayOneShot(winSound);
 
 			if (timerMenu >= 10)
 				imageWin.SetActive (false);
