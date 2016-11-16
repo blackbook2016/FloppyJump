@@ -99,11 +99,17 @@ public class Floppy : MonoBehaviour
 				else if (SceneManager.GetActiveScene ().name == "Scene_1")
 					SceneManager.LoadScene ("Scene_2");
 				else if (SceneManager.GetActiveScene ().name == "Scene_2")
+<<<<<<< HEAD
 					SceneManager.LoadScene ("Scene_3");
 				else if (SceneManager.GetActiveScene ().name == "Scene_3")
 					SceneManager.LoadScene ("Scene_4");
 				else if (SceneManager.GetActiveScene ().name == "Scene_4")
 					SceneManager.LoadScene ("Scene_5");
+=======
+				SceneManager.LoadScene ("Scene_3");				
+				else if (SceneManager.GetActiveScene ().name == "Scene_3")
+					SceneManager.LoadScene ("Scene_4");
+>>>>>>> origin/master
 				else
 					SceneManager.LoadScene ("Scene_0");
 			}
@@ -135,8 +141,8 @@ public class Floppy : MonoBehaviour
 					GameOver ();
 			}
 
-			if (Input.GetKeyDown ("space"))
-				GameOver ();
+//			if (Input.GetKeyDown ("space"))
+//				GameOver ();
 		}
 	}
 
