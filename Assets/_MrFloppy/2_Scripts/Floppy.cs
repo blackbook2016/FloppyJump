@@ -100,6 +100,10 @@ public class Floppy : MonoBehaviour
 					SceneManager.LoadScene ("Scene_2");
 				else if (SceneManager.GetActiveScene ().name == "Scene_2")
 					SceneManager.LoadScene ("Scene_3");
+				else if (SceneManager.GetActiveScene ().name == "Scene_3")
+					SceneManager.LoadScene ("Scene_4");
+				else if (SceneManager.GetActiveScene ().name == "Scene_4")
+					SceneManager.LoadScene ("Scene_5");
 				else
 					SceneManager.LoadScene ("Scene_0");
 			}
