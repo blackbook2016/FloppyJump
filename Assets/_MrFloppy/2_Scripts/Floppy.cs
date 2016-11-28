@@ -99,17 +99,13 @@ public class Floppy : MonoBehaviour
 				else if (SceneManager.GetActiveScene ().name == "Scene_1")
 					SceneManager.LoadScene ("Scene_2");
 				else if (SceneManager.GetActiveScene ().name == "Scene_2")
-<<<<<<< HEAD
 					SceneManager.LoadScene ("Scene_3");
 				else if (SceneManager.GetActiveScene ().name == "Scene_3")
 					SceneManager.LoadScene ("Scene_4");
 				else if (SceneManager.GetActiveScene ().name == "Scene_4")
 					SceneManager.LoadScene ("Scene_5");
-=======
-				SceneManager.LoadScene ("Scene_3");				
-				else if (SceneManager.GetActiveScene ().name == "Scene_3")
-					SceneManager.LoadScene ("Scene_4");
->>>>>>> origin/master
+				else if (SceneManager.GetActiveScene ().name == "Scene_5")
+					SceneManager.LoadScene ("Scene_6");
 				else
 					SceneManager.LoadScene ("Scene_0");
 			}
@@ -141,8 +137,8 @@ public class Floppy : MonoBehaviour
 					GameOver ();
 			}
 
-//			if (Input.GetKeyDown ("space"))
-//				GameOver ();
+			if (Input.GetKeyDown ("space"))
+				GameOver ();
 		}
 	}
 
@@ -282,7 +278,7 @@ public class Floppy : MonoBehaviour
 				imageWin.SetActive (false);
 			else 
 			{
-	//			Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
+				//			Com.LuisPedroFonseca.ProCamera2D.ProCamera2DShake.Instance.Shake ();
 				if(endexplosion)
 					Instantiate (endexplosion, rend.bounds.min, Quaternion.identity);
 			}
