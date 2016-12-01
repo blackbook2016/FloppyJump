@@ -30,6 +30,13 @@ public class Floppy : MonoBehaviour
 	public GameObject endexplosion;
 	public GameObject killexplosion;
 
+	[Header ("Config Sprite Flick")]
+	public Texture spriteInAir;
+	public float flickTimer = 0.5f;
+	private Texture spriteGrounded;
+	private Material mat;
+	private bool canFlick = false;
+
 	private int layerMask = 1 << 8;
 
 	private Vector3 origin;
@@ -45,7 +52,6 @@ public class Floppy : MonoBehaviour
 	private bool changeScene = false;
 	private bool replayStarted = false;
 	private float timerMenu = 0;
-
 
 	private AudioSource audioSource;
 	public AudioClip jumpSound;
@@ -78,9 +84,11 @@ public class Floppy : MonoBehaviour
 
 		size = rend.bounds.size;
 		size.x -= 0f;
-		size.y = 0.50f;
+		size.y += 0.1f;
 
 		initPos = transform.position;
+		mat = GetComponent<MeshRenderer> ().material;
+		spriteGrounded = mat.mainTexture;
 	}
 
 	void Update ()
@@ -137,8 +145,8 @@ public class Floppy : MonoBehaviour
 					GameOver ();
 			}
 
-			if (Input.GetKeyDown ("space"))
-				GameOver ();
+//			if (Input.GetKeyDown ("space"))
+//				GameOver ();
 		}
 	}
 
@@ -161,22 +169,10 @@ public class Floppy : MonoBehaviour
 		}
 	}
 	#endregion
-	public void ExternalJumpDetected()
-	{
-		if (!changeScene && !replayStarted) 
-		{
-			if (InfiniteJump || isGrounded)
-				Jump ();
-			else if (doubleJump && !djDone) 
-			{
-				djDone = true;
-				Jump ();
-			}
-		}
-	}
 
 	private void Jump()
 	{
+		canFlick = true;
 		Vector3 vel = rb.velocity;
 		vel.y = 0;
 		rb.velocity = vel;
@@ -215,9 +211,39 @@ public class Floppy : MonoBehaviour
 
 		//		groundedObj = detectedGroundObj;
 		isGrounded = Physics2D.OverlapBox (origin, size, 0, ~layerMask);
+
+		size.x -= 0.5f;
+
+		if (spriteInAir && !Physics2D.OverlapBox (origin, size, 0, ~layerMask) && canFlick) 
+		{
+			StopCoroutine (Flick ());
+			StartCoroutine (Flick ());
+		}
+			
 		//		print (detectedGroundObj);
 	}
 
+	IEnumerator Flick()
+	{
+		canFlick = false;
+		mat.mainTexture = spriteInAir;
+		yield return new WaitForSeconds (0.1f);
+		mat.mainTexture = spriteGrounded;
+	}
+
+	public void ExternalJumpDetected()
+	{
+		if (!changeScene && !replayStarted) 
+		{
+			if (InfiniteJump || isGrounded)
+				Jump ();
+			else if (doubleJump && !djDone) 
+			{
+				djDone = true;
+				Jump ();
+			}
+		}
+	}
 	public IEnumerator Replay()
 	{
 		CameraFloppy cam = Camera.main.GetComponent<CameraFloppy> ();
@@ -273,6 +299,12 @@ public class Floppy : MonoBehaviour
 			timerStart = Time.time;
 
 			audioSource.PlayOneShot(winSound);
+
+			this.GetComponent<MeshRenderer> ().enabled = false;
+			rb.isKinematic = true;
+			foreach (Transform child in transform) {
+				child.gameObject.SetActive(false);
+			}
 
 			if (timerMenu >= 10)
 				imageWin.SetActive (false);
