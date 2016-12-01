@@ -219,6 +219,8 @@ public class Floppy : MonoBehaviour
 			StopCoroutine (Flick ());
 			StartCoroutine (Flick ());
 		}
+		else
+			StopCoroutine (Flick ());
 			
 		//		print (detectedGroundObj);
 	}
@@ -227,7 +229,7 @@ public class Floppy : MonoBehaviour
 	{
 		canFlick = false;
 		mat.mainTexture = spriteInAir;
-		yield return new WaitForSeconds (0.1f);
+		yield return new WaitForSeconds (flickTimer);
 		mat.mainTexture = spriteGrounded;
 	}
 
